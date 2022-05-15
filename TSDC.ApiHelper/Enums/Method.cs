@@ -1,4 +1,4 @@
-﻿namespace TSDC.ApiHelper
+﻿namespace TSDC.ApiHelper.Enums
 {
     public enum Method
     {

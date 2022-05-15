@@ -1,16 +1,22 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
+using TSDC.ApiHelper.Enums;
 
 namespace TSDC.ApiHelper
 {
     public static class ApiHelper<T>
     {
-        public static async Task<BaseResult<T>?> ExecuteAsync(string apiUrl, Dictionary<string, string> parameters, object obj, Method method, string baseUrl)
+        public static async Task<BaseResult<T>?> ExecuteAsync(string apiUrl, Dictionary<string, string>? parameters, object? obj, Method method, string baseUrl, string? accessToken = null)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUrl);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                if (!string.IsNullOrEmpty(accessToken))
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", "Bearer" + accessToken);
+                }
 
                 if (!string.IsNullOrEmpty(apiUrl))
                 {
@@ -44,7 +50,7 @@ namespace TSDC.ApiHelper
         }
 
         #region GET
-        private static async Task<BaseResult<T>?> GetExecuteAsync(HttpClient client, string apiUrl, Dictionary<string, string> parameters, object obj)
+        private static async Task<BaseResult<T>?> GetExecuteAsync(HttpClient client, string apiUrl, Dictionary<string, string>? parameters, object? obj)
         {
             HttpResponseMessage response = parameters != null ? await client.GetAsync(QueryHelpers.AddQueryString(apiUrl, parameters)) : await client.GetAsync(apiUrl);            
 
@@ -66,7 +72,7 @@ namespace TSDC.ApiHelper
         #endregion
 
         #region POST
-        private static async Task<BaseResult<T>?> PostExecuteAsync(HttpClient client, string apiUrl, Dictionary<string, string> parameters, object obj)
+        private static async Task<BaseResult<T>?> PostExecuteAsync(HttpClient client, string apiUrl, Dictionary<string, string>? parameters, object? obj)
         {
             HttpResponseMessage response = await client.PostAsJsonAsync(apiUrl, obj);
 
@@ -88,7 +94,7 @@ namespace TSDC.ApiHelper
         #endregion
 
         #region PUT
-        private static async Task<BaseResult<T>?> PutExecuteAsync(HttpClient client, string apiUrl, Dictionary<string, string> parameters, object obj)
+        private static async Task<BaseResult<T>?> PutExecuteAsync(HttpClient client, string apiUrl, Dictionary<string, string>? parameters, object? obj)
         {
             HttpResponseMessage response = await client.PutAsJsonAsync(apiUrl, obj);
 
@@ -110,7 +116,7 @@ namespace TSDC.ApiHelper
         #endregion
 
         #region DELETE
-        private static async Task<BaseResult<T>?> DeleteExecuteAsync(HttpClient client, string apiUrl, Dictionary<string, string> parameters, object obj)
+        private static async Task<BaseResult<T>?> DeleteExecuteAsync(HttpClient client, string apiUrl, Dictionary<string, string>? parameters, object? obj)
         {
             HttpResponseMessage response = parameters != null ? await client.DeleteAsync(QueryHelpers.AddQueryString(apiUrl, parameters)) : await client.DeleteAsync(apiUrl);
 
