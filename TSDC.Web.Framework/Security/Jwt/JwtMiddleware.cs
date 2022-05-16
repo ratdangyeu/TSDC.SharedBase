@@ -27,8 +27,10 @@ namespace TSDC.Web.Framework
         #region Methods
         public async Task Invoke(HttpContext context, IUserService userService)
         {
-            var token = context.Request.Headers["Authorization"]
-                .FirstOrDefault()?.Split(" ").Last();
+            //var token = context.Request.Headers["Authorization"]
+            //    .FirstOrDefault()?.Split(" ").Last();
+
+            var token = context.Request.Cookies["X-Access-Token"];
 
             if (token != null)
             {
